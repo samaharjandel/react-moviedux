@@ -3,11 +3,18 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { OptimizelyProvider, createInstance } from '@optimizely/react-sdk';
+
+const optimizely = createInstance({
+  sdkKey: 'Svk5HRdcFqazn5VEvfj8k'  // Replace with your actual SDK key from Optimizely
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <OptimizelyProvider optimizely={optimizely} user={{id: 'user123'}}>
+      <App />
+    </OptimizelyProvider>
   </React.StrictMode>
 );
 

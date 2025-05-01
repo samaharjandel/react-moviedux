@@ -1,12 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles.css";
 import MovieCard from "./MovieCard";
+import { useDecision } from '@optimizely/react-sdk';
 
 export default function MoviesGrid({ movies, watchlist, toggleWatchlist }) {
   const [searchTerm, setSearchTerm] = useState("");
-
+  
+  const [decision] = useDecision('app_test', {
+    variables: ['watch_again', 'custom_genre', 'string_variable', 'custom_rating']
+  });
+  
+  console.log('Full decision object:', decision);
+  console.log('Decision enabled:', decision?.enabled);
+  console.log('Decision variables:', decision?.variables);
+  const customGenre = decision?.variables?.custom_genre ?? 'All Genres';
+  const customRating = decision?.variables?.custom_rating ?? 'All';
+  
   const [genre, setGenre] = useState("All Genres");
+  
+  useEffect(() => {
+    if (customGenre) {
+      setGenre(customGenre);
+    } else {
+      setGenre("All Genres");
+    }
+  }, [customGenre]);
+
+
+
   const [rating, setRating] = useState("All");
+  
+  useEffect(() => {
+    if (customRating) {
+      setRating(customRating);
+    } else {
+      setRating("All");
+    }
+  }, [customRating]);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);

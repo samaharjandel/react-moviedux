@@ -7,10 +7,17 @@ import MoviesGrid from "./components/MoviesGrid";
 import Watchlist from "./components/Watchlist";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useDecision } from '@optimizely/react-sdk';
 
 function App() {
   const [movies, setMovies] = useState([]);
   const [watchlist, setWatchlist] = useState([]);
+  
+  const [decision] = useDecision('app_test', {
+    variables: ['watch_again', 'boolean_variable', 'welcome_message','nav_button_colour']
+  });
+  const watchAgain = decision?.variables?.watch_again ?? false;
+  const navButtonColour = decision?.variables?.nav_button_colour ?? '#ffffff';
 
   useEffect(() => {
     fetch("movies.json")
@@ -35,11 +42,18 @@ function App() {
           <nav>
             <ul>
               <li>
-                <Link to="/">Home</Link>
+                <Link to="/" style={{ background: navButtonColour }}>Home</Link>
               </li>
               <li>
-                <Link to="/watchlist">Watchlist</Link>
+                <Link to="/watchlist" style={{ background: navButtonColour }}>Watchlist</Link>
               </li>
+              {watchAgain && (
+                <li>
+                  <Link to="/watch-again" style={{ background: navButtonColour }}>
+                    Watch Again
+                  </Link>
+                </li>
+              )}
             </ul>
           </nav>
 
